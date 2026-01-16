@@ -1,0 +1,12 @@
+pyproject.toml
+weather_app/main.py
+weather_app.egg-info/PKG-INFO
+weather_app.egg-info/SOURCES.txt
+weather_app.egg-info/dependency_links.txt
+weather_app.egg-info/entry_points.txt
+weather_app.egg-info/requires.txt
+weather_app.egg-info/top_level.txt
+weather_app/domain/weather_model.py
+weather_app/presentation/colors.py
+weather_app/presentation/weather_view.py
+weather_app/services/weather_service.py
