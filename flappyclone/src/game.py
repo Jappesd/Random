@@ -1,12 +1,7 @@
 import pygame
 from player import Player
 from pipe import Pipe
-import os
-
-base_dir = os.path.dirname(os.path.abspath(__file__))  # this file
-# path to assets folder
-assets_dir = os.path.join(base_dir, "..", "assets")
-bg_path = os.path.join(assets_dir, "cloud.png")
+from utils import resource_path
 
 
 class Game:
@@ -23,14 +18,18 @@ class Game:
         pygame.display.set_caption("Flappy Clone")
         self.clock = pygame.time.Clock()
         self.running = True
+        self.score = 0
+        self.highscore = self.load_highscore()
         # sky sprite
-        self.bg_img = pygame.image.load(bg_path).convert_alpha()
+        self.bg_img = pygame.image.load(
+            resource_path("assets/cloud.png")
+        ).convert_alpha()
         self.bg_width = self.bg_img.get_width()
         self.bg_scroll = 0
         self.bg_scroll_speed = 1
         # load ground sprite
         self.ground_img = pygame.image.load(
-            os.path.join(assets_dir, "ground.png")
+            resource_path("assets/ground.png")
         ).convert_alpha()
         self.ground_img = pygame.transform.scale(
             self.ground_img, (self.WIDTH, self.GROUND_HEIGHT)
@@ -55,6 +54,17 @@ class Game:
             self.update()
             self.draw()
         pygame.quit()
+
+    def load_highscore(self):
+        try:
+            with open("highscore.txt", "r") as f:
+                return int(f.read())
+        except:
+            return 0
+
+    def save_highscore(self):
+        with open("highscore.txt", "w") as f:
+            f.write(str(self.highscore))
 
     def handle_events(self):
         for event in pygame.event.get():
@@ -84,6 +94,9 @@ class Game:
             for rect in pipe.get_rects():
                 if self.player.get_rect().colliderect(rect):
                     self.game_over = True
+                    if self.score > self.highscore:
+                        self.highscore = self.score
+                        self.save_highscore()
             # score when passing pipe
             if not pipe.passed and pipe.x + pipe.WIDTH < self.player.x:
                 pipe.passed = True
@@ -102,6 +115,9 @@ class Game:
         if self.player.y + self.player.height // 2 >= self.HEIGHT - self.GROUND_HEIGHT:
             self.player.y = self.HEIGHT - self.GROUND_HEIGHT - self.player.height // 2
             self.game_over = True
+            if self.score > self.highscore:
+                self.highscore = self.score
+                self.save_highscore()
         # ground stuff
         if self.started and not self.game_over:
             self.bg_scroll -= self.bg_scroll_speed
@@ -120,9 +136,12 @@ class Game:
             pipe.draw(self.screen)
 
         self.player.draw(self.screen)
+        # score drawing
         font = pygame.font.SysFont(None, 36)
         score_text = font.render(f"Score: {self.score}", True, (255, 255, 255))
         self.screen.blit(score_text, (10, 10))
+        highscore_text = font.render(f"HI: {self.highscore}", True, (255, 255, 255))
+        self.screen.blit(highscore_text, (10, 40))
         if not self.started:  # if game not started draws text instructions
             font = pygame.font.SysFont(None, 40)
             text = font.render("Press SPACE to start", True, (0, 0, 0))

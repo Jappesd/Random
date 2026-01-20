@@ -1,6 +1,6 @@
 import pygame
 import random
-import os
+from utils import resource_path
 
 
 class Pipe:
@@ -27,14 +27,11 @@ class Pipe:
         )  # bottom cap height
 
         # load pipe img
-        base_dir = os.path.dirname(os.path.abspath(__file__))
-        assets_dir = os.path.join(base_dir, "..", "assets")
-
         self.cap_img = pygame.image.load(
-            os.path.join(assets_dir, "pipecap.png")
+            (resource_path("assets/pipecap.png"))
         ).convert_alpha()
         self.shaft_img = pygame.image.load(
-            os.path.join(assets_dir, "pipeshaft.png")
+            (resource_path("assets/pipeshaft.png"))
         ).convert_alpha()
 
         # scale shaft to top/bottom heights

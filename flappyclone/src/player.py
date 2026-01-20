@@ -1,5 +1,7 @@
 import pygame
 import os
+import sys
+from utils import resource_path
 
 
 class Player:
@@ -20,10 +22,9 @@ class Player:
         self.rotation_factor = 3  # how much velocity affects rotation
 
         # load birb sprite
-        BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-        ASSETS_DIR = os.path.join(BASE_DIR, "..", "assets")
+
         self.sprite = pygame.image.load(
-            os.path.join(ASSETS_DIR, "birb.png")
+            (resource_path("assets/birb.png"))
         ).convert_alpha()
         self.sprite = pygame.transform.scale(self.sprite, (self.width, self.height))
 
