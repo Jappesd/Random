@@ -1,0 +1,30 @@
+#node modules
+node_modules/
+
+#env variables
+.env
+
+#database file (local storage)
+backend/db/database.sqlite
+
+#logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS / editor files
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+
+# if frontend
+dist/
+build/
+
+# ======================
+# Temporary files
+# ======================
+*.tmp
+*.bak
+*.old

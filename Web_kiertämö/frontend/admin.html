@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width-device-width, initial-scale=1.0,user-scalable=no">
+        <title>Admin Panel</title>
+        <link rel="stylesheet" href="css/style.css" />
+    </head>
+    <body>
+        <main id="admin-app">
+            <h1 class="title">Admin Panel</h1>
+            <div id="login-container">
+                <label for="admin-key">Enter Admin Key:</label>
+                <input type="password" id="admin-key" placeholder="Admin Key"></input>
+                <button id="login-btn">Login</button>
+                <p id="login-error" class="hidden" style="color: red;">Invalid Key</p>
+            </div>
+
+            <div id="admin-actions" class="hidden">
+                <button id="export-btn">Export Ratings to CSV</button>
+                <p id="export-status"></p>
+                <div id="stats-container" class="hidden">
+                    <h2>Stats</h2>
+                    <table id="stats-table" border="1">
+                        <thead>
+                            <tr>
+                                <th>Arvosana</th>
+                                <th>Määrä</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Rows will be filled dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+
+            </div>
+        </main>
+        <script src="js/admin.js"></script>
+    </body>
+</html>
