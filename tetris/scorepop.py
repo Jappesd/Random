@@ -7,10 +7,10 @@ class ScorePop:
         self.text = text
         self.x = x
         self.y = y
-        self.vy = -12  # initial upward velocity
+        self.vy = -13  # initial upward velocity
         self.vx = 0  # horizontal velocity, set randomly later
         self.gravity = 0.2  # fall speed
-        self.font = pygame.font.SysFont("comicsans", 30)
+        self.font = pygame.font.SysFont("comicsans", 56)
         self.alpha = 255
         # decide horizontal fall direction
         self.vx = choice([-2, -1, 1, 2])
