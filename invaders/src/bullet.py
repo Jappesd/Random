@@ -8,9 +8,9 @@ class Bullet(pygame.sprite.Sprite):
         # Bullet class can be used for both player and enemy bullets.
         # Just set `speed` negative for player (upwards) and positive for enemy (downwards).
 
-        self.img = pygame.Surface((width, height))
-        self.img.fill(color)
-        self.rect = self.img.get_rect(center=(x, y))
+        self.image = pygame.Surface((width, height))
+        self.image.fill(color)
+        self.rect = self.image.get_rect(center=(x, y))
         self.speed = speed
         # Optionally, change `color` to distinguish player bullets (red) from enemy bullets (white).
 
