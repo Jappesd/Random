@@ -1,52 +1,64 @@
 import requests
-from bs4 import BeautifulSoup
-from tqdm import tqdm
 import os
+from datetime import date
+from tqdm import tqdm
 
-url = "https://karjalainen.fi/"
-response = requests.get(url)
+# -----------------------------
+# Setup folders and files
+# -----------------------------
+os.makedirs("memes", exist_ok=True)
 
-if response.status_code == 200:
-    print("Website fetched successfully!")
-    html_content = response.text
-else:
-    print("Failed to fetch website:", response.status_code)
-soup = BeautifulSoup(html_content, "html.parser")
-images = soup.find_all("img")  # Finds all <img> tags
+titles_file_path = "memes/meme_titles.txt"
+url_file_path = "memes/downloaded_urls.txt"
 
-print(f"Found {len(images)} images!")
-image_urls = []
+# Ensure files exist
+open(titles_file_path, "a", encoding="utf-8").close()
+open(url_file_path, "a").close()
 
-for img in images:
-    src = img.get("src")
-    if src:
-        if src.startswith("http"):
-            image_urls.append(src)
-        else:
-            # Convert relative URLs to absolute
-            from urllib.parse import urljoin
+# Load previously downloaded URLs
+with open(url_file_path, "r") as f:
+    downloaded_urls = set(line.strip() for line in f)
 
-            image_urls.append(urljoin(url, src))
+# -----------------------------
+# Scraper settings
+# -----------------------------
+url = "https://www.reddit.com/r/memes/top/.json?limit=50&t=day"
+headers = {"User-Agent": "MemeScraper/0.1"}
 
-image_urls_set = set(image_urls)  # Removes duplicates automatically
+response = requests.get(url, headers=headers)
+data = response.json()
 
-folder_name = "downloaded_images"
-os.makedirs(folder_name, exist_ok=True)
+today = date.today()  # Add date to titles
 
-for i, img_url in enumerate(tqdm(image_urls_set, desc="Downloading images")):
-    try:
-        img_data = requests.get(img_url).content
-        # Use the original filename if possible
-        filename = os.path.basename(img_url.split("?")[0])  # Removes query strings
-        if not filename:
-            filename = f"image_{i+1}.jpg"
-        file_path = os.path.join(folder_name, filename)
+# -----------------------------
+# Start scraping
+# -----------------------------
+with open(titles_file_path, "a", encoding="utf-8") as title_file:
+    for i, post in enumerate(tqdm(data["data"]["children"], desc="Downloading memes")):
+        post_data = post["data"]
+        if post_data.get("post_hint") != "image":
+            continue  # Skip non-image posts
 
-        # Skip if file already exists
-        if os.path.exists(file_path):
-            continue
+        meme_url = post_data["url"]
+        if meme_url in downloaded_urls:
+            continue  # Skip duplicates
+        downloaded_urls.add(meme_url)
 
-        with open(file_path, "wb") as f:
-            f.write(img_data)
-    except Exception as e:
-        print(f"Failed to download {img_url}: {e}")
+        try:
+            # Download image
+            img_data = requests.get(meme_url).content
+            file_path = f"memes/meme_{i+1}_{(today)}.jpg"
+            with open(file_path, "wb") as f:
+                f.write(img_data)
+
+            # Save title with date
+            title_file.write(f"{file_path} - {post_data['title']}\n")
+
+            # Update URL tracker file
+            with open(url_file_path, "a") as f:
+                f.write(meme_url + "\n")
+
+        except Exception as e:
+            print(f"Failed to download {meme_url}: {e}")
+
+print("Scraping complete!")

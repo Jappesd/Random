@@ -2,7 +2,7 @@ import pygame
 
 
 class Bullet(pygame.sprite.Sprite):
-    def __init__(self, x, y, speed=-10, color=(255, 0, 0), width=4, height=10):
+    def __init__(self, x, y, speed=-20, color=(255, 0, 0), width=5, height=10):
         super().__init__()
         # if speed is negative it goes upward, positive(enemy) goes down
         # Bullet class can be used for both player and enemy bullets.
